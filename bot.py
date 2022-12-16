@@ -1,4 +1,5 @@
 import os
+from time import sleep
 try:
     import telebot
     from telebot import types
@@ -19,22 +20,30 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda message: True)
 def searching_mod(message):
-    wait = bot.send_message(message.chat.id, 'Searching...')
+    wait1 = bot.send_message(message.chat.id, 'Searching 🔎')
     search = message.text
     if Mody.search(search) == None:
-        bot.delete_message(message.chat.id, wait.message_id)
+        bot.delete_message(message.chat.id, wait1.message_id)
         bot.send_message(message.chat.id, 'No results found')
     else:
+        bot.delete_message(message.chat.id, wait1.message_id)
+        wait2 = bot.send_message(message.chat.id, 'Hold on 🤯')
+        sleep(2)
+        bot.delete_message(message.chat.id, wait2.message_id)
+        wait3 = bot.send_message(message.chat.id, 'Almost there 🤓')
         data = Mody.search(search)
-        bot.delete_message(message.chat.id, wait.message_id)
+        bot.delete_message(message.chat.id, wait3.message_id)
+        wait4 = bot.send_message(message.chat.id, 'Here we go 🤩')
         for i in data:
             markup = types.InlineKeyboardMarkup()
             btn_docs= types.InlineKeyboardButton(text='Link 🌍', url=i['link'])
-            markup.add(types.InlineKeyboardButton('⚡', callback_data='download'), btn_docs)
+            markup.add(types.InlineKeyboardButton('Download⚡', callback_data='download'), btn_docs)
             bot.send_photo(message.chat.id, i['image'], caption=f'''
             *{i['title']}*\n*Version:* {i['version']}\n*Mod:* {i['mod']}\n*Size:* {i['size']}'''
             , parse_mode='Markdown', reply_markup=markup)
 
+        sleep(4)
+        bot.delete_message(message.chat.id, wait4.message_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'download')
@@ -76,7 +85,8 @@ def download_mod(call):
             bot.send_message(call.message.chat.id, f'Coudn\'t upload file, it\'s too big. Try to download it from link below\n{dlurl}')
             os.remove(f'./{filename}')
         bot.delete_message(call.message.chat.id, uplding.message_id)
-    
+        os.remove(f'./{filename}')    
 
 
 bot.infinity_polling()
+
