@@ -18,14 +18,14 @@ class Mody():
         resultes = soup.find_all('div', class_='flex-item')
         for result in resultes[:6]:
             try: 
-                title = result.find('h2', class_='truncate').text
+                title = result.find('div', class_='truncate').text
                 ver_m = result.find('p' , class_='card-excerpt has-small-font-size truncate').text
                 version = ver_m.replace('\n', '').split('•')[0]
                 mod = ver_m.replace('\n', '').split('•')[1][1:]
                 link =  result.find('a')['href']
                 image = result.find('img')['src']
-                size = Mody.get_size(link)
-                data.append({'title': title, 'version': version, 'mod': mod, 'link': link, 'image': image, 'size': size})
+                size = Mody.get_size(m_url+link)
+                data.append({'title': title, 'version': version, 'mod': mod, 'link': m_url+link, 'image': image, 'size': size})
             except:
                 pass
         if data == []:
@@ -39,7 +39,7 @@ class Mody():
             req = requests.get(url, timeout=10)
             soup = bs.BeautifulSoup(req.text, 'html.parser')
             results = soup.find_all('th', class_='has-text-align-left has-small-font-size has-cyan-bluish-gray-color')
-    
+
             data = []
             for result in results:
                 # where is the size 
@@ -88,4 +88,3 @@ class Mody():
             trinding = result.find_all('li')
             link = trinding[0].find('a')['href']
             print(link)
-    
